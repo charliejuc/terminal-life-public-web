@@ -1,9 +1,5 @@
-import fastify, {
-    FastifyInstance,
-    FastifyReply,
-    FastifyRequest,
-    FastifyServerOptions
-} from 'fastify'
+import fastify, { FastifyInstance, FastifyServerOptions } from 'fastify'
+import { userServerRoutes } from '@/modules/shared/user/infrastructure/UserRoutes'
 
 function setupFastifyServer(options?: FastifyServerOptions): FastifyInstance {
     options = options ?? {}
@@ -13,12 +9,9 @@ function setupFastifyServer(options?: FastifyServerOptions): FastifyInstance {
 }
 
 async function setupRoutes(server: FastifyInstance): Promise<void> {
-    server.get(
-        '/',
-        async function (request: FastifyRequest, reply: FastifyReply): Promise<unknown> {
-            return { hello: 'world' }
-        }
-    )
+    await server.register(userServerRoutes, {
+        prefix: '/user'
+    })
 }
 
 export async function buildServer(options?: FastifyServerOptions): Promise<FastifyInstance> {

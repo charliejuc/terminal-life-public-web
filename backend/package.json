@@ -12,7 +12,7 @@
     "ts-node": "ts-node",
     "dev": "yarn build-dev && env-cmd -f src/.env.development nodemon",
     "start": "env-cmd -f dist/.env ts-node dist/index.js",
-    "test": "env-cmd -f src/.env.test yarn jest"
+    "test": "yarn lint && env-cmd -f src/.env.test yarn jest"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.12.7",

@@ -9,6 +9,8 @@ buildServer({
     logger: {
         prettyPrint: isDevelopment
     }
-}).then((server: FastifyInstance) => {
-    server.listen(getPortOrFail(), handleFatalError)
-}).catch(handleFatalError)
+})
+    .then((server: FastifyInstance) => {
+        server.listen(getPortOrFail(), handleFatalError)
+    })
+    .catch(handleFatalError)
