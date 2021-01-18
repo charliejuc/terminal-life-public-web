@@ -1,11 +1,7 @@
-export function requestBodyParser(body: unknown): Record<string, unknown> {
-    if (typeof body !== 'string') {
-        return {}
-    }
+import R from 'ramda'
 
-    try {
-        return JSON.parse(body)
-    } catch (error) {
-        return {}
-    }
-}
+export const requestBodyParser: (body: unknown) => Record<string, unknown> = R.ifElse(
+    R.pipe(R.type, R.equals('String')),
+    R.tryCatch((value: string) => JSON.parse(value), R.always({})),
+    R.always({})
+)

@@ -34,7 +34,7 @@ it('"createUserSpy" should be called', async () => {
     expect(createUserSpy).toBeCalledTimes(1)
 })
 
-it('"createUserSpy" should be called with status code "204"', async () => {
+it('"createUserSpy" should be called with passed body', async () => {
     const body = { a: 1 }
     await callPutUserController(body)
     expect(createUserSpy).toBeCalledWith(body)
