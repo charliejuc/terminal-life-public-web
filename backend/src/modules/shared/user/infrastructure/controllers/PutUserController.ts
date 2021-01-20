@@ -4,6 +4,7 @@ import {
     CreateUser,
     createUserUseCaseFactory
 } from '@/modules/shared/user/application/CreateUserUseCase'
+import { User } from '@/modules/shared/user/domain/User'
 
 export async function putUserController(
     createUser: CreateUser,
@@ -14,9 +15,15 @@ export async function putUserController(
         request: FastifyRequest
         reply: FastifyReply
     }
-): Promise<void> {
+): Promise<void | { errors: Record<string, string> }> {
     const createUserUseCase = createUserUseCaseFactory(createUser)
-    await createUserUseCase(request.json ?? {})
+    const result = await createUserUseCase(request.json ?? {})
+
+    if (!(result instanceof User)) {
+        reply.status(400)
+        return result
+    }
+
     reply.status(204)
 }
 

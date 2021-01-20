@@ -1,20 +1,26 @@
 import fastify, { FastifyInstance, FastifyServerOptions } from 'fastify'
-import { userServerRoutes } from '@/modules/shared/user/infrastructure/UserRoutes'
+import {
+    userRoutes,
+    userServerRoutesFactory
+} from '@/modules/shared/user/infrastructure/UserRoutes'
 
-function setupFastifyServer(options?: FastifyServerOptions): FastifyInstance {
+export function setupFastifyServer(options?: FastifyServerOptions): FastifyInstance {
     options = options ?? {}
     return fastify({
         ...options
     })
 }
 
-async function setupRoutes(server: FastifyInstance): Promise<void> {
-    await server.register(userServerRoutes, {
-        prefix: '/user'
-    })
+const setupRoutes = async (server: FastifyInstance): Promise<void> => {
+    await server.register(
+        userServerRoutesFactory(async () => null),
+        {
+            prefix: userRoutes.prefixV1
+        }
+    )
 }
 
-export async function buildServer(options?: FastifyServerOptions): Promise<FastifyInstance> {
+export const buildServer = async (options?: FastifyServerOptions): Promise<FastifyInstance> => {
     const server = setupFastifyServer(options)
 
     await setupRoutes(server)
