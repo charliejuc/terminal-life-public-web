@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc && cp src/.env.production dist/.env",
-    "build-dev": "tsc",
+    "build-dev": "tsc && cp src/.env.development dist/.env",
     "eslint": "eslint",
     "lint": "tsc --noEmit && eslint --fix 'src/**/*.{js,ts}'",
     "jest": "jest",
@@ -15,6 +15,7 @@
     "test": "yarn lint && env-cmd -f src/.env.test yarn jest"
   },
   "devDependencies": {
+    "@types/argon2": "^0.15.0",
     "@types/jest": "^26.0.19",
     "@types/module-alias": "^2.0.0",
     "@types/ramda": "^0.27.34",
@@ -31,6 +32,7 @@
     "typescript": "^4.1.3"
   },
   "dependencies": {
+    "argon2": "^0.27.2",
     "env-cmd": "^10.1.0",
     "fastify": "^3.9.2",
     "module-alias": "^2.2.2",
