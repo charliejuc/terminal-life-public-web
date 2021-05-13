@@ -1,5 +1,6 @@
 import { setupFastifyServer } from '@/FastifyServer'
 import { UserCreatedAt } from '@/modules/shared/user/domain/value-objects/UserCreatedAt'
+import { UserPassword } from '@/modules/shared/user/domain/value-objects/UserPassword'
 import { UserUpdatedAt } from '@/modules/shared/user/domain/value-objects/UserUpdatedAt'
 import {
     userRoutes,
@@ -48,14 +49,19 @@ it('"createUserSpy" should be called with passed body', async () => {
 
     await injectPutUserRequest(body)
 
+    const password: UserPassword = createUserSpy.mock.calls[0][0].password
     const createdAt = createUserSpy.mock.calls[0][0].createdAt
     const updatedAt = createUserSpy.mock.calls[0][0].updatedAt
 
     expect(createUserSpy).toBeCalledWith({
         ...userMother(body).toValueObjects(),
+        password,
         createdAt,
         updatedAt
     })
+
+    expect(password).toBeInstanceOf(UserPassword)
+    expect(await password.verify(new UserPassword(body.password))).toBeNull()
 
     expect(createdAt).toBeInstanceOf(UserCreatedAt)
     expect(updatedAt).toBeInstanceOf(UserUpdatedAt)
@@ -81,7 +87,7 @@ it('"createUserSpy" UserUpdatedAt should be a Date greater than now', async () =
     expect(updatedAt.value.getTime()).toBeLessThanOrEqual(Date.now())
 })
 
-it('"createUserSpy" should be called with passed body', async () => {
+it('"createUserSpy" createdAt and updatedAt should be different from passed body', async () => {
     const user = userMother()
     const body = user.toPrimitives()
 

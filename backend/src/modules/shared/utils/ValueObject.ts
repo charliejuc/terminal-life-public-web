@@ -5,13 +5,30 @@ export type ValueObjectsValueType<T> = {
     [K in keyof T]: T[K] extends ValueObject ? T[K]['value'] : never
 }
 
-export const catcher = <T>(_class: new (value: unknown) => T) => (
-    key: string
-): ((value: unknown) => T | { errors: Record<string, string> }) =>
-    R.tryCatch(
-        R.construct(_class),
-        R.pipe(R.unary(R.prop)('message'), R.assocPath(['errors', key], R.__, { errors: {} }))
-    )
+export const catcher =
+    <T>(_class: new (value: unknown) => T) =>
+    (key: string): ((value: unknown) => T | { errors: Record<string, string> }) =>
+        R.tryCatch(
+            R.construct(_class),
+            R.pipe(R.unary(R.prop)('message'), R.assocPath(['errors', key], R.__, { errors: {} }))
+        )
+
+export const catcherNamedConstructorP =
+    <T>(namedConstructor: (value: unknown) => Promise<T>) =>
+    (key: string) =>
+    async (
+        value: unknown
+    ): Promise<ReturnType<typeof namedConstructor> | { errors: Record<string, string> }> => {
+        try {
+            return await namedConstructor(value)
+        } catch (error) {
+            return {
+                errors: {
+                    [key]: error.message
+                }
+            }
+        }
+    }
 
 const _cleanValueObjectsAndErrors = <EntityOptions>(
     acc: ReturnType<typeof resolver>,

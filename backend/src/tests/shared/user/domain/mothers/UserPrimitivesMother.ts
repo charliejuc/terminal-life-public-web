@@ -2,13 +2,14 @@ import { randomNumber } from '@/modules/shared/utils/Random'
 import faker from 'faker'
 import { v4 } from 'uuid'
 
-export const primitiveMotherFactory = (valueType: unknown) => <T>(
-    fn: () => T
-): ((value?: unknown) => T) => (value?: unknown): T =>
-    typeof value === valueType ||
-    (typeof valueType === 'object' && valueType !== null && valueType.constructor)
-        ? (value as T)
-        : fn()
+export const primitiveMotherFactory =
+    (valueType: unknown) =>
+    <T>(fn: () => T): ((value?: unknown) => T) =>
+    (value?: unknown): T =>
+        typeof value === valueType ||
+        (typeof valueType === 'object' && valueType !== null && valueType.constructor)
+            ? (value as T)
+            : fn()
 
 export const primitiveStringMotherFactory = primitiveMotherFactory('string')
 

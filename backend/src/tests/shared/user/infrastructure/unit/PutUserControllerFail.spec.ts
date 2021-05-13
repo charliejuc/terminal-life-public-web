@@ -1,5 +1,9 @@
 import { setupFastifyServer } from '@/FastifyServer'
 import {
+    UserPassword,
+    UserPasswordVerifyError
+} from '@/modules/shared/user/domain/value-objects/UserPassword'
+import {
     userRoutes,
     userServerRoutesFactory
 } from '@/modules/shared/user/infrastructure/UserRoutes'
@@ -125,6 +129,20 @@ it('should contain InvalidUserActive', async () => {
         }
     })
 })
+
+it('"createUserSpy" password don\'t match', async () => {
+    const body = userPrimitivesMother()
+
+    await injectPutUserRequest(body)
+
+    const password: UserPassword = createUserSpy.mock.calls[0][0].password
+
+    expect(password).toBeInstanceOf(UserPassword)
+    expect(await password.verify(new UserPassword(userPasswordPrimitiveMother()))).toBeInstanceOf(
+        UserPasswordVerifyError
+    )
+})
+
 it('should contain InvalidUserPassword - short password', async () => {
     const response = await injectPutUserRequest({
         ...userPrimitivesMother({

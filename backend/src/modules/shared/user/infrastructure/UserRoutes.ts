@@ -7,8 +7,8 @@ export enum userRoutes {
     create = '/register'
 }
 
-export const userServerRoutesFactory = (createUser: CreateUser) => async (
-    server: FastifyInstance
-): Promise<void> => {
-    server.put(userRoutes.create, putUserControllerFactory(createUser))
-}
+export const userServerRoutesFactory =
+    (createUser: CreateUser) =>
+    async (server: FastifyInstance): Promise<void> => {
+        server.put(userRoutes.create, putUserControllerFactory(createUser))
+    }

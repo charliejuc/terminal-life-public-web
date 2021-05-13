@@ -20,7 +20,7 @@ export class UserPassword extends ValueObject {
         this._value = value
     }
 
-    public static async create(passwordString: string): Promise<UserPassword> {
+    public static async create(passwordString: unknown): Promise<UserPassword> {
         const password = new this(passwordString)
 
         const passwordHashed: string = await argon2.hash(password.value)

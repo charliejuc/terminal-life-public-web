@@ -11,7 +11,9 @@ export type CreateUser = (userOptions: UserEntityOptions) => Promise<User | null
 
 const userIdCatcher = ValueObjectUtils.catcher(UserId)('id')
 const userUsernameCatcher = ValueObjectUtils.catcher(UserUsername)('username')
-const userPasswordCatcher = ValueObjectUtils.catcher(UserPassword)('password')
+const userPasswordCatcher = ValueObjectUtils.catcherNamedConstructorP(
+    UserPassword.create.bind(UserPassword)
+)('password')
 const userActiveCatcher = ValueObjectUtils.catcher(UserActive)('active')
 const userCreatedAtCatcher = ValueObjectUtils.catcher(UserCreatedAt)('createdAt')
 const userUpdatedAtCatcher = ValueObjectUtils.catcher(UserUpdatedAt)('updatedAt')
@@ -21,7 +23,7 @@ export async function createUserUseCase(
 ): Promise<User | { errors: Record<string, string> }> {
     const id = userIdCatcher(userOptions.id)
     const username = userUsernameCatcher(userOptions.username)
-    const password = userPasswordCatcher(userOptions.password)
+    const password = await userPasswordCatcher(userOptions.password)
     const active = userActiveCatcher(userOptions.active)
     const createdAt = userCreatedAtCatcher(new Date())
     const updatedAt = userUpdatedAtCatcher(new Date())
