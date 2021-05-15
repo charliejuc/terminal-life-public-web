@@ -41,6 +41,17 @@ export class User extends Entity implements UserOptions {
         this._updatedAt = userOptions.updatedAt
     }
 
+    public static fromPrimitives(userOptions: UserOptions): User {
+        return new this({
+            id: new UserId(userOptions.id),
+            username: new UserUsername(userOptions.username),
+            password: new UserPassword(userOptions.password),
+            active: new UserActive(userOptions.active),
+            createdAt: new UserCreatedAt(userOptions.createdAt),
+            updatedAt: new UserUpdatedAt(userOptions.updatedAt)
+        })
+    }
+
     public get id(): string {
         return this._id.value
     }

@@ -1,6 +1,6 @@
 import { FastifyInstance } from 'fastify'
 import { putUserControllerFactory } from '@/modules/shared/user/infrastructure/controllers/PutUserController'
-import { CreateUser } from '@/modules/shared/user/application/CreateUserUseCase'
+import { CreateUser } from '@/modules/shared/user/domain/Repositories'
 
 export enum userRoutes {
     prefixV1 = '/v1/user',

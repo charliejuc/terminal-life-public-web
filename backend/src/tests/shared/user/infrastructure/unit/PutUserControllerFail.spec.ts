@@ -1,4 +1,4 @@
-import { setupFastifyServer } from '@/FastifyServer'
+import { setupFastifyServer } from '@/SetupFastifyServer'
 import {
     UserPassword,
     UserPasswordVerifyError

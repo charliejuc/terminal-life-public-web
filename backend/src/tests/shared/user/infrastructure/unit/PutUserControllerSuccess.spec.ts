@@ -1,4 +1,4 @@
-import { setupFastifyServer } from '@/FastifyServer'
+import { setupFastifyServer } from '@/SetupFastifyServer'
 import { UserCreatedAt } from '@/modules/shared/user/domain/value-objects/UserCreatedAt'
 import { UserPassword } from '@/modules/shared/user/domain/value-objects/UserPassword'
 import { UserUpdatedAt } from '@/modules/shared/user/domain/value-objects/UserUpdatedAt'
