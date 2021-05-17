@@ -1,3 +1,11 @@
+import R from 'ramda'
+
+export const randomInt: (minOrMax: number, max?: number) => number = R.ifElse(
+    R.pipe(R.nthArg(1), R.type, R.equals('Undefined')),
+    (value: number) => Math.floor(Math.random() * value),
+    (min: number, max: number) => min + Math.floor(Math.random() * (max - min))
+)
+
 export const randomNumber = (minLength: number, maxLength?: number): number => {
     if (minLength < 0 || !Number.isInteger(minLength)) {
         throw new Error(`minLength should be an integer greater than 0. "${minLength}" passed`)
@@ -5,7 +13,7 @@ export const randomNumber = (minLength: number, maxLength?: number): number => {
 
     maxLength = maxLength ?? minLength
 
-    if (maxLength <= minLength || !Number.isInteger(maxLength)) {
+    if (maxLength < minLength || !Number.isInteger(maxLength)) {
         throw new Error(
             `maxLength should be an integer greater than minLength. "${minLength}" passed`
         )
@@ -15,7 +23,30 @@ export const randomNumber = (minLength: number, maxLength?: number): number => {
         console.warn(`Warning!!! Unexpected behaviour with maxLength greater than 18`)
     }
 
-    const length = minLength + Math.floor(Math.random() * (maxLength - minLength))
+    const length = randomInt(minLength, maxLength)
 
     return Math.floor(Math.random() * 10 ** length)
+}
+
+export const shortRandomString = () => Math.random().toString(32).slice(2)
+const _randomString = (minLength: number, maxLength: number, str: string): string =>
+    str.length >= maxLength
+        ? str.slice(0, randomInt(minLength, maxLength))
+        : _randomString(minLength, maxLength, `${str}${shortRandomString()}`)
+
+export const randomString = (minLength: number, maxLength?: number): string => {
+    if (minLength < 0 || !Number.isInteger(minLength)) {
+        throw new Error(`minLength should be an integer greater than 0. "${minLength}" passed`)
+    }
+
+    maxLength = maxLength ?? minLength
+
+    if (maxLength < minLength || !Number.isInteger(maxLength)) {
+        throw new Error(
+            `maxLength should be an integer greater than minLength. "${minLength}" passed`
+        )
+    }
+
+    const randomString = ''
+    return _randomString(minLength, maxLength, randomString)
 }

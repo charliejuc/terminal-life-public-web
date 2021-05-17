@@ -1,7 +1,7 @@
-import R from 'ramda'
 import { Environments } from '../types/Config'
+import { returnAlwaysFirstResult } from './Function'
 
-const NODE_ENV = R.memoizeWith(R.toString, (NODE_ENV: string | undefined): Environments => {
+const NODE_ENV = returnAlwaysFirstResult((NODE_ENV: string | undefined): Environments => {
     const environments: Environments[] = ['development', 'production']
     if (!(environments as string[]).includes(NODE_ENV ?? '')) {
         throw new Error(
@@ -14,23 +14,10 @@ const NODE_ENV = R.memoizeWith(R.toString, (NODE_ENV: string | undefined): Envir
 export const isDevelopment = NODE_ENV(process.env.NODE_ENV) === 'development'
 export const isProduction = NODE_ENV(process.env.NODE_ENV) === 'production'
 
-const stringify = (...args: unknown[]): string => JSON.stringify(args)
-export const MONGO_DATABASE = R.memoizeWith(
-    stringify,
-    (
-        MONGO_DATABASE: string,
-        options?: {
-            isDevelopment: boolean
-        }
-    ): string => {
-        if (options?.isDevelopment ?? isDevelopment) {
-            return MONGO_DATABASE
-        }
-
-        if (MONGO_DATABASE?.trim() === '') {
-            throw new Error('Environment variable "MONGO_DATABASE" is required')
-        }
-
-        return MONGO_DATABASE
+export const MONGO_DATABASE = returnAlwaysFirstResult((MONGO_DATABASE: string): string => {
+    if (MONGO_DATABASE?.trim() === '') {
+        throw new Error('Environment variable "MONGO_DATABASE" is required')
     }
-)
+
+    return MONGO_DATABASE
+})
