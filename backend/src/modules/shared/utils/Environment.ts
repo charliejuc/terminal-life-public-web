@@ -1,7 +1,7 @@
 import { Environments } from '../types/Config'
-import { returnAlwaysFirstResult } from './Function'
+import { memoizeSimple } from './Function'
 
-const NODE_ENV = returnAlwaysFirstResult((NODE_ENV: string | undefined): Environments => {
+const NODE_ENV = memoizeSimple((NODE_ENV: string | undefined): Environments => {
     const environments: Environments[] = ['development', 'production']
     if (!(environments as string[]).includes(NODE_ENV ?? '')) {
         throw new Error(
@@ -14,7 +14,7 @@ const NODE_ENV = returnAlwaysFirstResult((NODE_ENV: string | undefined): Environ
 export const isDevelopment = NODE_ENV(process.env.NODE_ENV) === 'development'
 export const isProduction = NODE_ENV(process.env.NODE_ENV) === 'production'
 
-export const MONGO_DATABASE = returnAlwaysFirstResult((MONGO_DATABASE: string): string => {
+export const MONGO_DATABASE = memoizeSimple((MONGO_DATABASE: string): string => {
     if (MONGO_DATABASE?.trim() === '') {
         throw new Error('Environment variable "MONGO_DATABASE" is required')
     }
