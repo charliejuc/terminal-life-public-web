@@ -1,8 +1,8 @@
 import R from 'ramda'
 
 export const randomInt: (minOrMax: number, max?: number) => number = R.ifElse(
-    R.pipe(R.nthArg(1), R.type, R.equals('Undefined')),
-    (value: number) => Math.floor(Math.random() * value),
+    R.pipe(R.nthArg(1), R.isNil),
+    (max: number) => Math.floor(Math.random() * max),
     (min: number, max: number) => min + Math.floor(Math.random() * (max - min))
 )
 
