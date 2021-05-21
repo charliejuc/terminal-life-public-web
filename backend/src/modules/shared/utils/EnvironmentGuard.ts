@@ -1,7 +1,7 @@
+import R from 'ramda'
 import { Environments } from '../types/Config'
-import { memoizeSimple } from './Function'
 
-const NODE_ENV = memoizeSimple((NODE_ENV: string | undefined): Environments => {
+const NODE_ENV = R.memoizeWith(R.toString, (NODE_ENV: string | undefined): Environments => {
     const environments: Environments[] = ['development', 'production']
     if (!(environments as string[]).includes(NODE_ENV ?? '')) {
         throw new Error(

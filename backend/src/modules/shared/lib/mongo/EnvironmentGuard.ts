@@ -1,41 +1,32 @@
-import { memoizeSimple } from '../../utils/Function'
+import R from 'ramda'
+import { isDevelopment } from '../../utils/EnvironmentGuard'
+import { stringify } from '../../utils/Function'
 
-export const MONGO_DATABASE = memoizeSimple((MONGO_DATABASE: string): string => {
-    if (MONGO_DATABASE?.trim() === '') {
-        throw new Error('Environment variable "MONGO_DATABASE" is required')
-    }
+const isValidEnvVariable = R.anyPass([R.isNil, R.pipe(R.trim, R.equals(''))])
+export const environmentOrDefault: <DefaultValue, R extends DefaultValue | undefined>(
+    envVariable: string | undefined,
+    defaultValue: DefaultValue,
+    _isDevelopment?: boolean
+) => R = R.ifElse(
+    R.pipe(R.nthArg(2), R.ifElse(R.isNil, R.always(isDevelopment), R.identity)),
+    R.ifElse(isValidEnvVariable, R.nthArg(1), R.nthArg(0)),
+    R.nthArg(0)
+)
 
-    return MONGO_DATABASE
-})
-
-export const MONGO_USERNAME = memoizeSimple((MONGO_USERNAME: string): string => {
-    if (MONGO_USERNAME?.trim() === '') {
-        throw new Error('Environment variable "MONGO_USERNAME" is required')
-    }
-
-    return MONGO_USERNAME
-})
-
-export const MONGO_PASSWORD = memoizeSimple((MONGO_PASSWORD: string): string => {
-    if (MONGO_PASSWORD?.trim() === '') {
-        throw new Error('Environment variable "MONGO_PASSWORD" is required')
-    }
-
-    return MONGO_PASSWORD
-})
-
-export const MONGO_HOST = memoizeSimple((MONGO_HOST: string): string => {
-    if (MONGO_HOST?.trim() === '') {
-        throw new Error('Environment variable "MONGO_HOST" is required')
-    }
-
-    return MONGO_HOST
-})
-
-export const MONGO_PORT = memoizeSimple((MONGO_PORT: string): string => {
-    if (MONGO_PORT?.trim() === '') {
-        throw new Error('Environment variable "MONGO_PORT" is required')
-    }
-
-    return MONGO_PORT
-})
+export const MONGO_DATABASE: <DefaultValue, R extends DefaultValue>(
+    envVariable: string | undefined,
+    defaultValue: DefaultValue,
+    _isDevelopment?: boolean
+) => R = R.memoizeWith(
+    stringify,
+    R.pipe(
+        environmentOrDefault,
+        R.ifElse(
+            isValidEnvVariable,
+            () => {
+                throw new Error('Environment variable "MONGO_DATABASE" is required')
+            },
+            R.identity
+        )
+    )
+)
