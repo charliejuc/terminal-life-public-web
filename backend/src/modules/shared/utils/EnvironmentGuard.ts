@@ -1,6 +1,12 @@
 import R from 'ramda'
 import { Environments } from '../types/Config'
 
+export const isValidEnvVariable = R.complement(R.anyPass([R.isNil, R.pipe(R.trim, R.equals(''))]))
+export const isValidEnvNumberVariable = R.both(
+    isValidEnvVariable,
+    R.pipe(Number, R.both(R.is(Number), R.complement(R.identical(NaN))))
+)
+
 const NODE_ENV = R.memoizeWith(R.toString, (NODE_ENV: string | undefined): Environments => {
     const environments: Environments[] = ['development', 'production']
     if (!(environments as string[]).includes(NODE_ENV ?? '')) {
