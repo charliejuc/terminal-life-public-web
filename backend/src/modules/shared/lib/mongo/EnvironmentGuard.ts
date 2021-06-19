@@ -9,18 +9,18 @@ import { stringify } from '../../utils/Function'
 export const environmentOrDefault: <DefaultValue, R extends DefaultValue | undefined>(
     envVariable: string | undefined,
     defaultValue: DefaultValue,
-    _isDevelopment?: boolean
+    returnDefault: boolean
 ) => R = R.ifElse(
     R.pipe(R.nthArg(2), R.ifElse(R.isNil, R.always(isDevelopment), R.identity)),
-    R.ifElse(isValidEnvVariable, R.nthArg(1), R.nthArg(0)),
-    R.nthArg(0)
+    R.ifElse(isValidEnvVariable, /*envVariable*/ R.nthArg(0), /*defaultValue*/ R.nthArg(1)),
+    /*envVariable*/ R.nthArg(0)
 )
 
-export const MONGO_DATABASE: <DefaultValue, R extends DefaultValue>(
+export const MONGO_DATABASE: (
     envVariable: string | undefined,
-    defaultValue: DefaultValue,
-    _isDevelopment?: boolean
-) => R = R.memoizeWith(
+    defaultValue: string,
+    _isDevelopment: boolean
+) => string = R.memoizeWith(
     stringify,
     R.pipe(
         environmentOrDefault,
@@ -30,11 +30,11 @@ export const MONGO_DATABASE: <DefaultValue, R extends DefaultValue>(
     )
 )
 
-export const MONGO_USERNAME: <DefaultValue, R extends DefaultValue>(
+export const MONGO_USERNAME: (
     envVariable: string | undefined,
-    defaultValue: DefaultValue,
-    _isDevelopment?: boolean
-) => R = R.memoizeWith(
+    defaultValue: string,
+    _isDevelopment: boolean
+) => string = R.memoizeWith(
     stringify,
     R.pipe(
         environmentOrDefault,
@@ -44,11 +44,11 @@ export const MONGO_USERNAME: <DefaultValue, R extends DefaultValue>(
     )
 )
 
-export const MONGO_PASSWORD: <DefaultValue, R extends DefaultValue>(
+export const MONGO_PASSWORD: (
     envVariable: string | undefined,
-    defaultValue: DefaultValue,
-    _isDevelopment?: boolean
-) => R = R.memoizeWith(
+    defaultValue: string,
+    _isDevelopment: boolean
+) => string = R.memoizeWith(
     stringify,
     R.pipe(
         environmentOrDefault,
@@ -58,11 +58,11 @@ export const MONGO_PASSWORD: <DefaultValue, R extends DefaultValue>(
     )
 )
 
-export const MONGO_HOST: <DefaultValue, R extends DefaultValue>(
+export const MONGO_HOST: (
     envVariable: string | undefined,
-    defaultValue: DefaultValue,
-    _isDevelopment?: boolean
-) => R = R.memoizeWith(
+    defaultValue: string,
+    _isDevelopment: boolean
+) => string = R.memoizeWith(
     stringify,
     R.pipe(
         environmentOrDefault,
@@ -72,16 +72,14 @@ export const MONGO_HOST: <DefaultValue, R extends DefaultValue>(
     )
 )
 
-export const MONGO_PORT: <DefaultValue, R extends DefaultValue>(
-    envVariable: string | undefined,
-    defaultValue: DefaultValue,
-    _isDevelopment?: boolean
-) => R = R.memoizeWith(
-    stringify,
-    R.pipe(
-        environmentOrDefault,
-        R.ifElse(isValidEnvNumberVariable, R.identity, () => {
-            throw new Error('Environment variable "MONGO_PORT" is required and should be a number')
-        })
+export const MONGO_PORT: (envVariable: string | undefined, defaultValue: number) => number =
+    R.memoizeWith(
+        stringify,
+        R.pipe(
+            (envVariable: string | undefined, defaultValue: number) =>
+                environmentOrDefault(envVariable, defaultValue.toString(), /*returnDefault*/ true),
+            R.ifElse(isValidEnvNumberVariable, R.pipe(R.identity, Number), (value: string) => {
+                throw new Error(`Environment variable "MONGO_PORT" is invalid: "${value}"`)
+            })
+        )
     )
-)

@@ -1,5 +1,6 @@
 import { MongoClientOptions } from 'mongodb'
-// import * as MongoEnvironmentGuard from './EnvironmentGuard'
+import { isDevelopment } from '../../utils/EnvironmentGuard'
+import * as MongoEnvironmentGuard from './EnvironmentGuard'
 
 export interface MongoDatabaseConfig extends MongoClientOptions {
     database: string
@@ -10,11 +11,19 @@ export interface MongoDatabaseConfig extends MongoClientOptions {
     useUnifiedTopology: boolean
 }
 
-// export const mongoDatabaseConfig: MongoDatabaseConfig = {
-//     database: MongoEnvironmentGuard.MONGO_DATABASE(process.env.MONGO_DATABASE ?? 'test_db'),
-//     user: MongoEnvironmentGuard.MONGO_USERNAME(process.env.MONGO_USERNAME ?? 'mongo'),
-//     password: MongoEnvironmentGuard.MONGO_PASSWORD(process.env.MONGO_PASSWORD ?? 'mongo'),
-//     host: MongoEnvironmentGuard.MONGO_HOST(process.env.MONGO_HOST ?? 'localhost'),
-//     port: MongoEnvironmentGuard.MONGO_PORT(process.env.MONGO_PORT ?? 27017),
-//     useUnifiedTopology: true
-// }
+export const mongoDatabaseConfig: MongoDatabaseConfig = {
+    database: MongoEnvironmentGuard.MONGO_DATABASE(
+        process.env.MONGO_DATABASE,
+        'test_db',
+        isDevelopment
+    ),
+    user: MongoEnvironmentGuard.MONGO_USERNAME(process.env.MONGO_USERNAME, 'mongo', isDevelopment),
+    password: MongoEnvironmentGuard.MONGO_PASSWORD(
+        process.env.MONGO_PASSWORD,
+        'mongo',
+        isDevelopment
+    ),
+    host: MongoEnvironmentGuard.MONGO_HOST(process.env.MONGO_HOST, 'localhost', isDevelopment),
+    port: MongoEnvironmentGuard.MONGO_PORT(process.env.MONGO_PORT, 27017),
+    useUnifiedTopology: true
+}
