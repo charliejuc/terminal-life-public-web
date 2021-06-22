@@ -36,3 +36,6 @@ dist/**/*
 
 # Custom
 *.production
+.env.test
+.env.development
+.env.production
