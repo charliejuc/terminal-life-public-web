@@ -3,6 +3,6 @@ export function handleFatalError(error?: Error): void {
         return
     }
 
-    console.error(error)
+    console.error('[FATAL ERROR]:', error)
     process.exit(1)
 }

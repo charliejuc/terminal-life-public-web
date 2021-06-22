@@ -3,6 +3,8 @@ import {
     userRoutes,
     userServerRoutesFactory
 } from '@/modules/shared/user/infrastructure/UserRoutes'
+import { setupMongoConnection } from './modules/shared/lib/mongo/Connection'
+import { mongoDatabaseConfig } from './modules/shared/lib/mongo/Config'
 
 export function setupFastifyServer(options?: FastifyServerOptions): FastifyInstance {
     options = options ?? {}
@@ -22,6 +24,8 @@ const setupRoutes = async (server: FastifyInstance): Promise<void> => {
 
 export const buildServer = async (options?: FastifyServerOptions): Promise<FastifyInstance> => {
     const server = setupFastifyServer(options)
+
+    await setupMongoConnection(mongoDatabaseConfig)
 
     await setupRoutes(server)
 

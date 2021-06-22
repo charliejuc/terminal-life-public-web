@@ -17,10 +17,10 @@ export const mongoDatabaseConfig: MongoDatabaseConfig = {
         'test_db',
         isDevelopment
     ),
-    user: MongoEnvironmentGuard.MONGO_USERNAME(process.env.MONGO_USERNAME, 'mongo', isDevelopment),
+    user: MongoEnvironmentGuard.MONGO_USERNAME(process.env.MONGO_USERNAME, 'dbUser', isDevelopment),
     password: MongoEnvironmentGuard.MONGO_PASSWORD(
         process.env.MONGO_PASSWORD,
-        'mongo',
+        'root',
         isDevelopment
     ),
     host: MongoEnvironmentGuard.MONGO_HOST(process.env.MONGO_HOST, 'localhost', isDevelopment),
