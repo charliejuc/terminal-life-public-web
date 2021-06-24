@@ -1,16 +1,12 @@
-import { Db, MongoClient } from 'mongodb'
+import { Db, MongoClient, MongoClientCommonOption } from 'mongodb'
 import objectOmit from 'object.omit'
-import { mongoDatabaseConfig, MongoDatabaseConfig } from './Config'
+import { MongoDatabaseConfig } from './Config'
 
-export interface GetMongoOptions {
-    database: string
-}
-
-let mongoClient: MongoClient | null = null
 const urlTemplate = (options: MongoDatabaseConfig): string =>
     `mongodb://${options.user}:${options.password}@${options.host}:${options.port.toString()}/${
         options.database
     }`
+let mongoClient: MongoClient | null = null
 export async function setupMongoConnection(
     mongoDatabaseConfig: MongoDatabaseConfig
 ): Promise<MongoClient> {
@@ -28,15 +24,10 @@ export async function setupMongoConnection(
     return mongoClient
 }
 
-export function getMongoDatabase(options: GetMongoOptions): Db {
-    const databaseName = options.database
-
+export function getMongoDatabase(databaseName: string, options?: MongoClientCommonOption): Db {
     if (mongoClient === null) {
         throw new Error('"mongoClient" is null, run "setupMongoConnection" before this')
     }
 
-    return mongoClient.db(databaseName)
+    return mongoClient.db(databaseName, options)
 }
-
-// setupMongoConnection(mongoDatabaseConfig).catch(console.error)
-console.log(urlTemplate(mongoDatabaseConfig))

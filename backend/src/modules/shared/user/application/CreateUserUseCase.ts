@@ -6,8 +6,7 @@ import { UserCreatedAt } from '../domain/value-objects/UserCreatedAt'
 import { UserPassword } from '../domain/value-objects/UserPassword'
 import { UserUpdatedAt } from '../domain/value-objects/UserUpdatedAt'
 import { UserUsername } from '../domain/value-objects/UserUsername'
-
-export type CreateUser = (userOptions: UserEntityOptions) => Promise<User | null>
+import { CreateUser } from '../domain/Repositories'
 
 const userIdCatcher = ValueObjectUtils.catcher(UserId)('id')
 const userUsernameCatcher = ValueObjectUtils.catcher(UserUsername)('username')

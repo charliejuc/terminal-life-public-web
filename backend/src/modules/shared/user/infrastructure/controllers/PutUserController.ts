@@ -1,10 +1,8 @@
-import { FastifyReply, FastifyRequest } from 'fastify'
-import { requestBodyParser } from '@/modules/shared/user/infrastructure/fastify/RequestBodyParser'
-import {
-    CreateUser,
-    createUserUseCaseFactory
-} from '@/modules/shared/user/application/CreateUserUseCase'
+import { CreateUser } from '@/modules/shared/user/domain/Repositories'
 import { User } from '@/modules/shared/user/domain/User'
+import { requestBodyParser } from '@/modules/shared/user/infrastructure/fastify/RequestBodyParser'
+import { FastifyReply, FastifyRequest } from 'fastify'
+import { createUserUseCaseFactory } from '../../application/CreateUserUseCase'
 
 export async function putUserController(
     createUser: CreateUser,
