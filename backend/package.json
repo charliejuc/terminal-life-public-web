@@ -9,12 +9,12 @@
     "eslint": "eslint",
     "lint:nofix": "tsc --noEmit && eslint 'src/**/*.{js,ts}'",
     "lint": "tsc --noEmit && eslint --fix 'src/**/*.{js,ts}'",
-    "jest": "jest",
+    "jest": "env-cmd -f src/.env.test jest",
     "ts-node": "ts-node",
     "dev": "npm-run-all build-dev && env-cmd -f src/.env.development nodemon",
     "start": "env-cmd -f dist/.env ts-node dist/index.js",
-    "test": "env-cmd -f src/.env.test npm-run-all lint:nofix jest",
-    "test:unit": "npm-run-all test --testPathPattern 'unit/.*'"
+    "test": "npm-run-all lint:nofix jest",
+    "test:unit": "npm-run-all lint:nofix && yarn jest --testPathPattern 'unit/.*'"
   },
   "devDependencies": {
     "@types/faker": "^5.5.3",

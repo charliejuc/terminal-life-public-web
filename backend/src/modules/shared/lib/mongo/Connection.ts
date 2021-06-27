@@ -1,6 +1,5 @@
 import { Db, MongoClient, MongoClientCommonOption } from 'mongodb'
 import objectOmit from 'object.omit'
-import { isDevelopment } from '../../utils/EnvironmentGuard'
 import { MongoDatabaseConfig } from './Config'
 
 const urlTemplate = (options: MongoDatabaseConfig): string =>
@@ -9,14 +8,8 @@ const urlTemplate = (options: MongoDatabaseConfig): string =>
     }`
 let mongoClient: MongoClient | null = null
 export async function setupMongoConnection(
-    mongoDatabaseConfig: MongoDatabaseConfig,
-    fake?: boolean
+    mongoDatabaseConfig: MongoDatabaseConfig
 ): Promise<void> {
-    if (isDevelopment && fake === true) {
-        mongoClient = {} as MongoClient
-        return
-    }
-
     if (mongoClient !== null) {
         return
     }
@@ -29,6 +22,14 @@ export async function setupMongoConnection(
     )
 
     await mongoClient.connect()
+}
+
+export async function closeMongoConnection(): Promise<void> {
+    if (mongoClient === null) {
+        throw new Error('"mongoClient" is null, run "setupMongoConnection" before this')
+    }
+
+    await mongoClient.close()
 }
 
 export function getMongoDatabase(databaseName: string, options?: MongoClientCommonOption): Db {
