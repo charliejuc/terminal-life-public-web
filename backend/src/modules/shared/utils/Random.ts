@@ -1,4 +1,5 @@
 import R from 'ramda'
+import { trampoline } from './Function'
 
 export const randomInt: (minOrMax: number, max?: number) => number = R.ifElse(
     R.pipe(R.nthArg(1), R.isNil),
@@ -29,15 +30,12 @@ export const randomNumber = (minLength: number, maxLength?: number): number => {
 }
 
 export const shortRandomString = (): string => Math.random().toString(32).slice(2)
-const _randomString = (minLength: number, maxLength: number): ((str: string) => string) => {
-    const recall = _randomString(minLength, maxLength)
-
-    return R.ifElse(
+const _randomString = (minLength: number, maxLength: number): ((str: string) => string) =>
+    R.ifElse(
         R.pipe(R.length, R.gte(R.__, maxLength)),
         R.slice(0, randomInt(minLength, maxLength)),
-        (str: string) => recall(`${str}${shortRandomString()}`)
+        (str: string) => _randomString(minLength, maxLength)(`${str}${shortRandomString()}`)
     )
-}
 export const randomString = (minLength: number, maxLength?: number): string => {
     if (minLength <= 0 || !Number.isInteger(minLength)) {
         throw new Error(`minLength should be an integer greater than 0. "${minLength}" passed`)

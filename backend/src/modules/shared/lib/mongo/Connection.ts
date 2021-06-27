@@ -1,6 +1,6 @@
 import { Db, MongoClient, MongoClientCommonOption } from 'mongodb'
 import objectOmit from 'object.omit'
-import { MongoDatabaseConfig } from './Config'
+import { mongoDatabaseConfig, MongoDatabaseConfig } from './Config'
 
 const urlTemplate = (options: MongoDatabaseConfig): string =>
     `mongodb://${options.user}:${options.password}@${options.host}:${options.port.toString()}/${
@@ -30,6 +30,8 @@ export async function closeMongoConnection(): Promise<void> {
     }
 
     await mongoClient.close()
+
+    mongoClient = null
 }
 
 export function getMongoDatabase(databaseName: string, options?: MongoClientCommonOption): Db {

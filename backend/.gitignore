@@ -39,3 +39,4 @@ dist/**/*
 .env.test
 .env.development
 .env.production
+jest.env.ts
